@@ -28,6 +28,8 @@ export class AppController {
     if (!todo) {
       throw new NotFoundException('Invalid Todo');
     }
+
+    return todo;
   }
 
   @Post('todos')

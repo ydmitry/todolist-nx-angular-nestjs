@@ -12,6 +12,7 @@ export class TodoFormService {
     id: [null],
     name: ['', [Validators.required]],
     description: [null],
+    tasks: this.fb.array([]),
   });
 
   get tasksFormArray(): FormArray {
@@ -40,10 +41,6 @@ export class TodoFormService {
   }
 
   addTask(name: string) {
-    if (!this.tasksFormArray) {
-      this.form.addControl('tasks', this.fb.array([]));
-    }
-
     this.tasksFormArray.push(
       this.fb.group({
         name: [name, [Validators.required]],
@@ -55,7 +52,7 @@ export class TodoFormService {
   populate(todo: Todo) {
     // Create dynamic structure and after that set value
     (todo.tasks ?? []).forEach(() => this.addTask(''));
-    this.form.setValue(todo);
+    this.form.patchValue(todo);
 
     this.cdRef.detectChanges();
   }
@@ -77,14 +74,20 @@ export class TodoFormService {
       this.http
         .post<Todo>('/api/todos', todoCleanup(this.form.value))
         .subscribe({
-          next: ({ id }) => void this.router.navigate([id]),
+          next: ({ id }) => {
+            alert('Created!');
+            void this.router.navigate([id]);
+          },
           error: () => alert('Server side error'),
         });
     } else {
       this.http
         .put<Todo>(`/api/todos/${this.todoId}`, todoCleanup(this.form.value))
         .subscribe({
-          next: ({ id }) => void this.router.navigate([id]),
+          next: ({ id }) => {
+            alert('Updated!');
+            void this.router.navigate([id]);
+          },
           error: () => alert('Server side error'),
         });
     }
