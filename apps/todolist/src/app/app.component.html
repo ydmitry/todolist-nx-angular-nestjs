@@ -1,9 +1,10 @@
-<div style="text-align: center">
-  <h1>Welcome to todolist!</h1>
-  <img
-    width="450"
-    src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png"
-    alt="Nx - Smart, Fast and Extensible Build System"
-  />
+<div class="h-full w-full flex items-center justify-center bg-teal-200 font-sans">
+  <div class="bg-white rounded shadow p-6 m-4 w-full lg:w-3/4 lg:max-w-lg">
+    <div class="mb-4">
+      <h1 class="text-slate-800 text-xl">Todos</h1>
+    </div>
+    <div>
+      <router-outlet></router-outlet>
+    </div>
+  </div>
 </div>
-<div>Message: {{ hello$ | async | json }}</div>

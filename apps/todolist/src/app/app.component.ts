@@ -1,13 +1,14 @@
-import { Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Message } from '@todolist-app/api-interfaces';
+import { Todo } from '@todolist-app/api-interfaces';
 
 @Component({
   selector: 'todolist-app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  styleUrls: [],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent {
-  hello$ = this.http.get<Message>('/api/hello');
+  hello$ = this.http.get<Todo[]>('/api/todos');
   constructor(private http: HttpClient) {}
 }

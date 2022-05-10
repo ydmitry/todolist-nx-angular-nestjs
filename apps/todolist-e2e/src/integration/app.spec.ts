@@ -1,13 +1,18 @@
-import { getGreeting } from '../support/app.po';
+import { createTodo, nameField, saveTodo } from '../support/app.po';
 
 describe('todolist', () => {
   beforeEach(() => cy.visit('/'));
 
-  it('should display welcome message', () => {
-    // Custom command example, see `../support/commands.ts` file
-    cy.login('my-email@something.com', 'myPassword');
+  it('should be able to create todo item', () => {
+    createTodo().click();
+    nameField().type('Test');
+    cy.intercept('POST', '/api/todos').as('creating');
 
-    // Function helper example, see `../support/app.po.ts` file
-    getGreeting().contains('Welcome todolist');
+    saveTodo().click();
+
+    cy.wait('@creating').then((interception) => {
+      assert.deepEqual(interception.request?.body, { name: 'Test' });
+      assert.equal(interception.response?.body.name, 'Test');
+    });
   });
 });
