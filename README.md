@@ -42,3 +42,4 @@
 * In `api` was implemented simplest storage strategy which uses runtime memory
   * To support database storage it's possible to implement and provide `DataProvider`
 * Tailwind was used to quickly copy and reuse ready elements from Internet
+* Instead of unit tests for Angular components and services - Cypress e2e tests

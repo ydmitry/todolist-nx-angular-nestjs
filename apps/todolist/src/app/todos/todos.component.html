@@ -1,4 +1,8 @@
-<div class="flex mb-4 items-center" *ngFor="let todo of todos$ | async">
+<div
+  class="flex mb-4 items-center"
+  *ngFor="let todo of todos$ | async"
+  data-role-todo-item
+>
   <p class="w-full">
     <a [routerLink]="[todo.id]" class="text-slate-800 hover:text-teal-400">{{
       todo.name
