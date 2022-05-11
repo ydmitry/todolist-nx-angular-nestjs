@@ -1,6 +1,8 @@
 import { Todo } from '@todolist-app/api-interfaces';
 
 export function todoCleanup(todo: Record<string, unknown>): Todo {
+  todo = { ...todo }; // Make immutable
+
   if (todo['id'] === null) {
     delete todo['id'];
   }

@@ -23,9 +23,11 @@ export class TodoFormComponent implements OnInit {
   save() {
     this.todoForm.save();
   }
+
   addTask(name: string) {
     this.todoForm.addTask(name);
   }
+
   deleteTask(group: FormGroup) {
     this.todoForm.deleteTask(group);
   }
