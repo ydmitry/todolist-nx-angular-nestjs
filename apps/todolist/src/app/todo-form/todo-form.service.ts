@@ -1,9 +1,8 @@
 import { ChangeDetectorRef, Injectable } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { Todo } from '@todolist-app/api-interfaces';
 import { todoCleanup } from './todo-cleanup';
+import { TodoFormActorService } from './todo-form-actor.service';
 
 @Injectable()
 export class TodoFormService {
@@ -19,25 +18,14 @@ export class TodoFormService {
     return this.form.get('tasks') as FormArray;
   }
 
-  get todoId(): number {
-    return this.route.snapshot.params['id'];
-  }
-
   constructor(
     private fb: FormBuilder,
-    private route: ActivatedRoute,
-    private http: HttpClient,
-    private router: Router,
-    private cdRef: ChangeDetectorRef
+    private cdRef: ChangeDetectorRef,
+    private actor: TodoFormActorService
   ) {}
 
   load() {
-    if (this.todoId) {
-      this.http.get<Todo>(`/api/todos/${this.todoId}`).subscribe({
-        next: (todo) => this.populate(todo),
-        error: () => alert('Server side error'),
-      });
-    }
+    this.actor.load((todo: Todo) => this.populate(todo));
   }
 
   addTask(name: string) {
@@ -58,9 +46,13 @@ export class TodoFormService {
   }
 
   deleteTask(group: FormGroup) {
-    const index = this.tasksFormArray.controls.findIndex(
-      (task) => task === group
-    );
+    const index = this.tasksFormArray.controls.indexOf(group);
+
+    if (index === -1) {
+      // Not found - already deleted (hometask comment: defensive error handling strategy example)
+      return;
+    }
+
     this.tasksFormArray.removeAt(index);
   }
 
@@ -70,26 +62,6 @@ export class TodoFormService {
       return;
     }
 
-    if (!this.todoId) {
-      this.http
-        .post<Todo>('/api/todos', todoCleanup(this.form.value))
-        .subscribe({
-          next: ({ id }) => {
-            alert('Created!');
-            void this.router.navigate([id]);
-          },
-          error: () => alert('Server side error'),
-        });
-    } else {
-      this.http
-        .put<Todo>(`/api/todos/${this.todoId}`, todoCleanup(this.form.value))
-        .subscribe({
-          next: ({ id }) => {
-            alert('Updated!');
-            void this.router.navigate([id]);
-          },
-          error: () => alert('Server side error'),
-        });
-    }
+    this.actor.save(todoCleanup(this.form.value));
   }
 }
