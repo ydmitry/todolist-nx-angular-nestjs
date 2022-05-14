@@ -1,7 +1,6 @@
 import { Test } from '@nestjs/testing';
 
 import { DataProviderService } from './data-provider.service';
-import { before } from '@nrwl/node/src/utils/__mocks__/plugin-a';
 
 describe('DataProviderService', () => {
   let service: DataProviderService;
@@ -68,6 +67,12 @@ describe('DataProviderService', () => {
         id: 1,
         name: 'test 2',
       });
+    });
+
+    it('should fail if ID not matches', async () => {
+      await expect(async () =>
+        service.update(1, { id: 2, name: 'test 2' })
+      ).rejects.toThrow('`id` param not matches `id` in `todo`');
     });
   });
 
